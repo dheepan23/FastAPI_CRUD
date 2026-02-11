@@ -20,12 +20,10 @@ def create_user(db : Session, user_create: UserCreate):
     )
     db.add(new_user)
     db.commit()
-    db.refresh(new_user)
     return JSONResponse(
         status_code=status.HTTP_201_CREATED,
         content={
             "message" : "User created successfully",
-            "data": new_user,
         }
     ) 
 
