@@ -16,5 +16,7 @@ def login(data: LoginSchema, db: Session = Depends(get_db)):
     except ValueError as e:
         raise HTTPException(status_code=401, detail=str(e))
     except Exception:
-        import traceback
-        traceback.print_exc()
+        raise HTTPException(
+            status_code=500,
+            detail="An error occurred while login",
+        )
