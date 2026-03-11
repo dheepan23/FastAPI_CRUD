@@ -11,7 +11,9 @@ router = APIRouter(prefix="/users",tags=["Users"])
 def create_users(user: UserCreate, db:Session=Depends(get_db)):
     try:
         return create_user(db,user)
-    except HTTPException:
+    except HTTPException as e:
+        raise e
+    except Exception:
         db.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

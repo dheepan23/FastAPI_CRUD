@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from app.schemas.user_schemas import UserCreate, UserUpdate
 from fastapi import HTTPException,status
 from fastapi.responses import JSONResponse
+from app.utils.security import hash_password
 
 def create_user(db : Session, user_create: UserCreate):
     existing_user = db.query(Users).filter(Users.email == user_create.email).first()
@@ -16,7 +17,7 @@ def create_user(db : Session, user_create: UserCreate):
         name=user_create.name,
         email=user_create.email,
         role=user_create.role,
-        hashed_password=user_create.password
+        hashed_password=hash_password(user_create.password)
     )
     db.add(new_user)
     db.commit()
@@ -78,7 +79,7 @@ def update_user_by_id(db:Session,user_id : int,user_update: UserUpdate):
     if user_update.name:
         user.name = user_update.name
     if user_update.password:
-        user.hashed_password = user_update.password
+        user.hashed_password = hash_password(user_update.password)
     if user_update.is_active is not None:
         user.is_active = user_update.is_active
     db.commit()
